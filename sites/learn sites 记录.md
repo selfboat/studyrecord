@@ -49,4 +49,43 @@
 
 - 信号量是一个特殊的变量，程序对其访问都是`原子操作`，且只允许对它进行等待（即P(信号变量))和发送（即V(信号变量))信息操作
 
-- 状态 未完成
+
+
+#### 3. linux线程互斥量pthread_mutex_t使用简介
+
+- https://blog.csdn.net/guotianqing/article/details/80559865
+
+- 问题:
+
+  在一个多线程程序中，两个及以上个线程对同一个变量i执行i++操作，结果得到的值并不如顺序执行所预期的那样。这就是线程间不同步的一个例子。可以用程序修改变量值时所经历的三个步骤解释这个现象：
+
+  从内存单元读入寄存器
+  在寄存器中对变量操作（加/减1）
+  把新值写回到内存单元
+
+- 线程锁
+
+  - 互斥变量使用特定的数据类型：pthread_mutex_t，使用互斥量前要先初始化，使用的函数如下:
+
+    ```
+    #include <pthread.h>
+    //线程锁
+    int pthread_mutex_init(pthread_mutex_t *restrict mutex, const pthread_mutexattr_t *restrict attr);
+    int pthread_mutex_destroy(pthread_mutex_t *mutex);
+    //加锁操作
+    int pthread_mutex_lock(pthread_mutex_t *mutex);
+    int pthread_mutex_trylock(pthread_mutex_t *mutex);
+    int pthread_mutex_unlock(pthreadd_mutex_t *mutex);
+    //避免死锁操作
+    int pthread_mutex_timedlock(pthread_mutex_t *restrict mutex, const struct timesec *restrict tsptr);
+    ```
+
+- 读写锁
+
+  - 读写锁非常适合于对数据结构读的次数远远大于写的情况。
+
+- 条件变量,自旋锁
+
+  - 条件变量与互斥量一直使用时，允许线程以无竞争的方式等待特定的条件发生。条件变量是线程可用的另一种同步机制
+  - 自旋锁用在非抢占式内核中时是非常有用的
+  - 在用户层，自旋锁并不非常有用。很多互斥量的实现非常高效，甚至与采用自旋锁是同行效率的。
