@@ -142,5 +142,81 @@
 #### 6. 系统调用和函数调用
 
 - 系统调用主要包括这些:
+  - Task	Commands
+    进程控制	fork(); exit(); wait();
+    进程通信	pipe(); shmget(); mmap();
+    文件操作	open(); read(); write();
+    设备操作	ioctl(); read(); write();
+    信息维护	getpid(); alarm(); sleep();
+    安全	chmod(); umask(); chown();
+
+#### 7.  同步与互斥
+
+- 什么是同步,什么是互斥
+- 信号量机制下的生产者-消费者问题的实现,线程间的同步和互斥
+- 存在两个定义的PV操作或者叫up and down操作. 定义两个信号量, empty 为空缓冲队列的数量,full为满缓冲队列的数量, 使用mutex来实现互斥访问操作, 避免永远等待的死锁
+- 角色实现 producer 和 consumer. 
+
+
+
+#### 8. 经典的同步问题
+
+- 生产者消费者问题
+
+- 哲学家进餐问题, 
+
+  - 为了防止死锁的发生，可以设置两个条件：
+
+    必须同时拿起左右两根筷子；
+    只有在两个邻居都没有进餐的情况下才允许进餐。
+
+  - state[i], check[i], take_two(i),put_two(i), mutex, philosopher(i)
+
+- 读者和写者的问题
+
+  - 允许多个进程同时对数据进行读操作，但是不允许读和写以及写和写操作同时发生。
   - 
 
+#### 9. pipe和FIFO的使用
+
+- 匿名管道与命名管道的区别
+  匿名管道由 pipe 函数创建并打开。
+  命名管道由 mkfifo 函数创建，打开用 open
+- FIFO（命名管道）与pipe（匿名管道）之间唯一的区别在它们创建与打开的方式不同，一但这些工作完成之后，它们具有相同的语义。
+  命名管道的打开规则
+  如果当前打开操作是为读而打开FIFO时
+  O_NONBLOCK disable：阻塞直到有相应进程为写而打开该FIFO
+  O_NONBLOCK enable：立刻返回成功
+  如果当前打开操作是为写而打开FIFO时
+  O_NONBLOCK disable：阻塞直到有相应进程为读而打开该FIFO
+  O_NONBLOCK enable：立刻返回失败，错误码为ENXIO.
+- 总结: 默认已阻塞的方式open, 而客户端和服务端进程,通过mkfifo()访问创建同一路径的命名管道文件,
+  - 读和写操作互相阻塞,等待对方的打开操作成功,然后完成双方进程的通信.
+  - https://blog.csdn.net/lvxin15353715790/article/details/89920111   实现client/server的FIFO通信例子
+  - read, write
+
+
+
+#### 10. 进程通信 消息队列
+
+- https://www.zhihu.com/question/54152397?sort=created  知乎高票答案, 将消息队列写得很详细,使用原因,工程分析
+- 库里面的或者操作系统的消息队列都是简单的内存型队列, 对于我们的大型并发低延时系统来说,尚不能满足要求.
+  - 如果是单机应用,那么可以使用系统自带的或者手动写的.
+  - 如果是分布式应用, 并发量高的,需要考虑多机应用, 需要使用分布式/集群的消息队列部署,避免单台挂掉了 ,导致系统无法正常运转.
+  - 数据丢失的问题.  学过Redis的都知道，Redis可以将数据持久化磁盘上，万一Redis挂了，还能从磁盘从将数据恢复过来。同样地，消息队列中的数据也需要存在别的地方，这样才尽可能减少数据的丢失。
+  - redis数据持久化,避免宕机数据丢失, 快照或者追加方式. rdb, aof
+  - pull 和 push ,消费者获取队列的消息
+
+
+
+#### 11. Redis持久化--Redis宕机或者出现意外删库导致数据丢失--解决方案
+
+- https://www.cnblogs.com/xlecho/p/11834011.html
+
+
+
+#### 12. 吊打面试官系列-java-敖丙  
+
+- https://github.com/AobingJava/JavaFamily 
+- 搜索Ctrl + F
+- 
