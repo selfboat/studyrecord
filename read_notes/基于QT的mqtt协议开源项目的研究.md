@@ -118,9 +118,9 @@
   - 可重入（reentrant）函数, 它们都是可重入的类. 解释:https://blog.csdn.net/u012033124/article/details/72715319　　　
   
   - reentrant函数或者类,多线程访问时候
-    
+  
 - 可重入函数可以在任意时刻被中断，稍后再继续运行，不会丢失数据。可重入函数要么使用本地变量，要么在使用全局变量时保护自己的数据。
-    
+  
   - 延伸: **函数的可重入性与线程安全之间的关系**
   
     - 可重入的函数不一定是线程安全的；
@@ -159,11 +159,15 @@
     
       - 可以是普通tcpsocket通信,可以是ssl_socket通信方式实现,可以使websocket的通信实现方式.
     
-    - websockets 支持,需要手动安装库
+    - WebSocket类, 使用QWebSocket类,实现SocketInterface定义的功能接口实现类.
     
+      - websockets 支持,需要手动安装库
       - apt-get install sudo apt-get install libqt5websockets5-dev 
+      - 基于TCP的全双工通信,支持13版本的协议
     
-    - SslSocket类,基于QTcpSocket, 实现SocketInterface接口的功能.
+    - SslSocket类,使用QT封装的QSslSocket, 基于QTcpSocket, 实现SocketInterface接口的功能.
+    
+      - 安全密钥认证功能
     
     - 形如:  底层套接字通信接口->Qt封装的QTcpSocket通信->SocketInterface接口实现, 进行分功能实现这个网络层通信定义
     
@@ -181,7 +185,53 @@
 
 
 
-#### 3. MQTT协议的理解介绍
+#### 3. 数据传输协议设计
+
+- 从上到下,从外部到内部
+- publish(Message data )----->提取关键信息,dup,qos,retain,header type---->组合成frame--->sendFrame(Frame data)----->使用外部封装配置的network对象发送数据---->使用底层具体的socket发送网络数据----->调用IO类QDataStream,完成数据的发送.
+- 完成外部应用消息-----> 中间协议帧------>底层通信字节流数据转换发送
+
+
+
+#### 4. 动态库封装实设计
+
+- qmqtt_global.h
+
+  - 动态库导出和导入申明
+
+    ```c++
+    #include <QtGlobal>
+    
+    #ifndef QT_STATIC
+    #  if defined(QT_BUILD_QMQTT_LIB)
+    #    define Q_MQTT_EXPORT Q_DECL_EXPORT
+    #  else
+    #    define Q_MQTT_EXPORT Q_DECL_IMPORT
+    #  endif
+    #else
+    #  define Q_MQTT_EXPORT
+    #endif
+    ```
+
+  - 导出Q_MQTT_EXPORT声明的有:
+
+    - ```
+      Client
+      Frame
+      Message
+      RoutedMessage
+      Router
+      RouteSubscription
+      NetworkInterface
+      SocketInterface
+      TimerInterface
+      ```
+
+      看到,所有的外部通信实体类,对外开放的接口功能类,都需要导出,给外部查看定义的方式.
+
+
+
+#### 5. MQTT协议的理解介绍
 
 - MQTT协议是应用层协议，需要借助TCP/IP协议进行传输，类似HTTP协议。MQTT协议也有自己的格式，如下表
 
