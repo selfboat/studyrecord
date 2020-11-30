@@ -63,6 +63,9 @@
   -  https://blog.csdn.net/weixin_36983723/article/details/85070064
   - 前段时间写完了RTMP的直播方案，因为是基于librtmp的库来实现的，所以比较简单。之后花了一个月吧，参照海思的rtsp推流框架，慢慢的写了一个基于RealTek为底层的网络摄像头Rtsp直播功能的demo。这个不带任何库，纯C写的推流功能，学到了蛮多东西的，都写下来以后忘了还能回来看看，同时也希望给刚刚起步做rtsp直播的小伙伴一点参考。
     一时间也不知道从什么地方讲起，我还是顺着我的代码一步一步讲吧。首先要确定一个事情就是，在网络摄像头RTSP直播的方案中，摄像头是作为服务器端的，连接摄像头请求码流数据的都是客户端。
+- 2、RTSP协议的实现,分了客户端和服务端
+  - https://blog.csdn.net/huabiaochen/article/details/104528045
+  - 
 
 #### 3. 官方文档与手册
 
@@ -96,3 +99,7 @@
   - 直接上手
 - 网络摄像头RTSP视频流WEB端实时播放实现方案
   - https://blog.csdn.net/shixin_0125/article/details/109096340
+- 一分钟之内搭建自己的直播服务器？
+  - github 地址：https://github.com/superconvert/smart_rtmpd
+  - 这款软件就非常好用，解压既运行，支持跨平台，无任何依赖，性能和 SRS 相比不分上下。支持级联和 url rewrite 以及 CDN 分发
+  - csdn 博客 https://blog.csdn.net/freeabc/article/details/102880984
